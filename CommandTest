@@ -1,0 +1,66 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Autodesk.Revit;
+using Autodesk.Revit.UI;
+using Autodesk.Revit.DB;
+using UIFramework;
+using RevitWPFTest.Windows;
+using Autodesk.Windows;
+using System.Windows.Controls;
+using System.Windows;
+using Autodesk.Revit.Attributes;
+using System.Windows.Media;
+using System.Xml.Linq;
+using Xceed.Wpf.AvalonDock.Controls;
+using Xceed.Wpf.AvalonDock.Layout;
+using System.Windows.Threading;
+
+
+private static void AddNewPanel()
+  {
+      var Element = VisualUtils.FindVisualParent<System.Windows.Controls.Grid>(ComponentManager.Ribbon, "rootGrid");
+
+      //var Element1 = VisualUtils.FindVisualParent<System.Windows.Controls.Grid>(Grid, "rootGrid");
+
+      FrameworkElement dockManager = null;
+      var zahl = VisualTreeHelper.GetChildrenCount(Element);
+      for (var i = 0; i < VisualTreeHelper.GetChildrenCount(Element); i++)
+      {
+          var childElement = (FrameworkElement)VisualTreeHelper.GetChild(Element, i);
+          var childName = childElement.Name;
+          if (childName == "dockManager")
+          {
+              dockManager = childElement;
+              break;
+          }
+      }
+
+      var num = VisualTreeHelper.GetChildrenCount(dockManager);
+
+      //var layoutAnchorablePaneGroup = VisualUtils.FindChildrenOfType<LayoutAnchorablePaneGroupControl>(dockManager);
+      var mlayoutPanelControl = VisualUtils.FindChildrenOfType<LayoutPanelControl>(dockManager);
+
+      var newLayout = new LayoutAnchorable
+      {
+          Title = "Wand Generator",
+          Content = new UserControlTest()
+      };
+
+
+      var newPane = new LayoutAnchorablePane();
+      newPane.Children.Add(newLayout);
+
+      var newPaneGroup = new LayoutAnchorablePaneGroup();
+      newPaneGroup.Children.Add(newPane);
+
+      var targetPanelControl = mlayoutPanelControl.FirstOrDefault();
+      var targetPanelModel = targetPanelControl.Model as LayoutPanel;
+
+      if (targetPanelModel != null)
+      {
+          targetPanelModel.Children.Add(newPaneGroup);
+      }
+  }
